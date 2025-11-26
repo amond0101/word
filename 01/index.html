@@ -287,42 +287,7 @@
             pointer-events: none;
         }
 
-        .timer-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 30px;
-            margin-top: 30px;
-        }
-
-        .timer-display {
-            font-size: 4em;
-            font-weight: bold;
-            color: #000;
-            font-family: 'Courier New', monospace;
-        }
-
-        .timer-controls {
-            display: flex;
-            gap: 20px;
-        }
-
-        .timer-btn {
-            padding: 15px 30px;
-            font-size: 1.2em;
-            border: 2px solid #000;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            color: #000;
-            background: white;
-            transition: all 0.3s;
-        }
-
-        .timer-btn:hover {
-            background: #000;
-            color: white;
-        }
+        /* 타이머 관련 CSS가 전부 삭제되었습니다. */
 
         .hidden {
             display: none;
@@ -346,8 +311,7 @@
             <h1>영어 단어 학습 앱</h1>
             <div class="menu">
                 <button class="menu-btn" onclick="showVocabMenu()">📚 영어 단어 암기</button>
-                <button class="menu-btn" onclick="showTimer()">⏰ 공부 타이머</button>
-            </div>
+                </div>
         </div>
 
         <div id="vocab-menu" class="hidden">
@@ -365,8 +329,7 @@
         <div id="card-game" class="hidden"></div>
         <div id="quiz-game" class="hidden"></div>
         <div id="typing-game" class="hidden"></div>
-        <div id="timer-section" class="hidden"></div>
-    </div>
+        </div>
 
     <script>
         const vocab = {
@@ -410,7 +373,7 @@
             document.getElementById('card-game').classList.add('hidden');
             document.getElementById('quiz-game').classList.add('hidden');
             document.getElementById('typing-game').classList.add('hidden');
-            document.getElementById('timer-section').classList.add('hidden');
+            // document.getElementById('timer-section').classList.add('hidden'); (삭제됨)
         }
 
         function showVocabMenu() {
@@ -664,104 +627,7 @@
             backToVocabMenu();
         }
 
-        function showTimer() {
-            document.getElementById('main-menu').classList.add('hidden');
-            const container = document.getElementById('timer-section');
-            container.classList.remove('hidden');
-            
-            container.innerHTML = `
-                <button class="back-btn" onclick="showMainMenu()">← 돌아가기</button>
-                <h1>공부 타이머</h1>
-                <div class="timer-container">
-                    <div class="timer-display" id="timer-display">00:00:00</div>
-                    <div class="timer-controls">
-                        <button class="timer-btn" onclick="startTimer()">시작</button>
-                        <button class="timer-btn" onclick="stopTimer()">중지</button>
-                        <button class="timer-btn" onclick="saveSheet()">CSV 파일 저장</button>
-                        <button class="timer-btn" onclick="clearRecords()">기록 초기화</button>
-                    </div>
-                </div>
-            `;
-        }
-
-        let timerInterval;
-        let timerSeconds = 0;
-        let timerRunning = false;
-
-        function startTimer() {
-            if (!timerRunning) {
-                timerRunning = true;
-                timerInterval = setInterval(() => {
-                    timerSeconds++;
-                    updateTimerDisplay();
-                }, 1000);
-            }
-        }
-
-        function stopTimer() {
-            timerRunning = false;
-            clearInterval(timerInterval);
-        }
-
-        function updateTimerDisplay() {
-            const hours = Math.floor(timerSeconds / 3600);
-            const minutes = Math.floor((timerSeconds % 3600) / 60);
-            const seconds = timerSeconds % 60;
-            
-            const display = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-            document.getElementById('timer-display').textContent = display;
-        }
-
-        function saveSheet() {
-            const hours = Math.floor(timerSeconds / 3600);
-            const minutes = Math.floor((timerSeconds % 3600) / 60);
-            const seconds = timerSeconds % 60;
-            
-            const now = new Date();
-            const dateStr = now.toLocaleString('ko-KR');
-            
-            // 기존 기록 불러오기
-            let records = JSON.parse(localStorage.getItem('studyRecords') || '[]');
-            
-            // 새 기록 추가
-            const newRecord = {
-                날짜: dateStr,
-                공부시간: `${hours}시간 ${minutes}분 ${seconds}초`,
-                총초: timerSeconds
-            };
-            records.push(newRecord);
-            
-            // localStorage에 저장
-            localStorage.setItem('studyRecords', JSON.stringify(records));
-            
-            // CSV 형식으로 변환
-            let csvContent = '날짜,공부시간,총초\n';
-            records.forEach(record => {
-                csvContent += `${record.날짜},${record.공부시간},${record.총초}\n`;
-            });
-            
-            // CSV 파일 다운로드
-            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = '공부시간.csv';
-            a.click();
-            URL.revokeObjectURL(url);
-            
-            alert(`공부 시간이 CSV 파일로 저장되었습니다!\n(브라우저 다운로드 폴더에 저장됩니다)\n\n파일명: 공부시간.csv\n원하는 경로: C:\\bjj\\공부시간.csv\n\n현재까지 총 ${records.length}개의 기록이 누적되었습니다.`);
-            
-            // 타이머 초기화
-            timerSeconds = 0;
-            updateTimerDisplay();
-        }
-
-        function clearRecords() {
-            if (confirm('정말로 모든 공부 기록을 삭제하시겠습니까?')) {
-                localStorage.removeItem('studyRecords');
-                alert('모든 기록이 초기화되었습니다.');
-            }
-        }
+        // 타이머 관련 함수 (showTimer, startTimer, stopTimer, updateTimerDisplay, saveSheet, clearRecords)가 모두 삭제되었습니다.
 
         function backToVocabMenu() {
             if (gameInterval) clearInterval(gameInterval);
