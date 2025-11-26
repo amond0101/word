@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영어 단어 학습 앱</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 90%;
+            min-height: 500px;
+            border: 1px solid #e0e0e0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #000;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .menu {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .menu-btn {
+            padding: 20px 40px;
+            font-size: 1.2em;
+            background: #000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .menu-btn:hover {
+            background: #333;
+        }
+
+        .back-btn {
+            padding: 10px 20px;
+            background: white;
+            color: #000;
+            border: 2px solid #000;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-size: 1em;
+        }
+
+        .back-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .game-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .game-btn {
+            padding: 30px 20px;
+            background: white;
+            color: #000;
+            border: 2px solid #000;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s;
+        }
+
+        .game-btn:hover {
+            background: #000;
+            color: white;
+        }
+
+        .card-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .card {
+            width: 400px;
+            height: 250px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5em;
+            font-weight: bold;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border: 2px solid #000;
+        }
+
+        .card-front {
+            background: #000;
+            color: white;
+        }
+
+        .card-back {
+            background: white;
+            color: #000;
+            transform: rotateY(180deg);
+        }
+
+        .next-btn, .action-btn {
+            padding: 15px 40px;
+            background: #000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .next-btn:hover, .action-btn:hover {
+            background: #333;
+        }
+
+        .quiz-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .quiz-card {
+            width: 400px;
+            height: 150px;
+            background: #000;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5em;
+            font-weight: bold;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .option-btn {
+            padding: 20px;
+            background: white;
+            border: 2px solid #000;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s;
+            color: #333;
+        }
+
+        .option-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .option-btn.correct {
+            background: #000;
+            color: white;
+            border-color: #000;
+        }
+
+        .option-btn.wrong {
+            background: #666;
+            color: white;
+            border-color: #666;
+        }
+
+        .result-message {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .result-message.correct {
+            color: #000;
+        }
+
+        .result-message.wrong {
+            color: #666;
+        }
+
+        .game-canvas {
+            width: 100%;
+            max-width: 600px;
+            height: 500px;
+            background: #000;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            margin: 20px auto;
+        }
+
+        .game-hud {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 30px;
+            color: white;
+            font-size: 1.2em;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        .input-container {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+
+        .word-input {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border: 2px solid #fff;
+            border-radius: 5px;
+            width: 300px;
+            text-align: center;
+        }
+
+        .falling-word {
+            position: absolute;
+            font-size: 1.2em;
+            font-weight: bold;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .timer-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .timer-display {
+            font-size: 4em;
+            font-weight: bold;
+            color: #000;
+            font-family: 'Courier New', monospace;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 20px;
+        }
+
+        .timer-btn {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border: 2px solid #000;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #000;
+            background: white;
+            transition: all 0.3s;
+        }
+
+        .timer-btn:hover {
+            background: #000;
+            color: white;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .card, .quiz-card {
+                width: 90%;
+                max-width: 350px;
+            }
+
+            .options {
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="main-menu">
+            <h1>영어 단어 학습 앱</h1>
+            <div class="menu">
+                <button class="menu-btn" onclick="showVocabMenu()">📚 영어 단어 암기</button>
+                <button class="menu-btn" onclick="showTimer()">⏰ 공부 타이머</button>
+            </div>
+        </div>
+
+        <div id="vocab-menu" class="hidden">
+            <button class="back-btn" onclick="showMainMenu()">← 돌아가기</button>
+            <h1>영어 단어 암기</h1>
+            <div class="game-menu">
+                <button class="game-btn" onclick="startGame('card-eng')">게임 1: 영어→뜻</button>
+                <button class="game-btn" onclick="startGame('card-kor')">게임 2: 뜻→영어</button>
+                <button class="game-btn" onclick="startGame('quiz-eng')">게임 3: 영어 퀴즈</button>
+                <button class="game-btn" onclick="startGame('quiz-kor')">게임 4: 뜻 퀴즈</button>
+                <button class="game-btn" onclick="startGame('typing')">게임 5: 타자 게임</button>
+            </div>
+        </div>
+
+        <div id="card-game" class="hidden"></div>
+        <div id="quiz-game" class="hidden"></div>
+        <div id="typing-game" class="hidden"></div>
+        <div id="timer-section" class="hidden"></div>
+    </div>
+
+    <script>
+        const vocab = {
+            "행복한": "happy", "기쁜": "delighted", "만족한": "satisfied", "놀라운": "amazed",
+            "자랑스러운": "proud", "자신 있는": "confident", "건강한": "healthy", "아픈": "sick",
+            "흥미로운": "interested", "흥분한": "excited", "질투하는": "jealous", "짜증 나는": "annoyed",
+            "화난": "angry", "걱정하는": "worried", "난처한": "embarrassing", "외로운": "lonely",
+            "무서운": "afraid", "겁나는": "scared", "실망한": "disappointed", "배고픈": "hungry",
+            "졸린": "sleepy", "목마른": "thirsty", "배부른": "full", "피곤한": "tired",
+            "지친": "exhausted", "정직한": "honest", "신중한": "cautious", "긍정적인": "positive",
+            "부정적인": "negative", "진지한": "serious", "즐거운": "fun", "웃긴": "funny",
+            "조용한": "quiet", "수줍은": "shy", "내향적인": "introverted", "외향적인": "extroverted",
+            "유머러스한": "humorous", "용감한": "brave", "잔인한": "cruel", "호기심 많은": "curious",
+            "부지런한": "diligent", "게으른": "lazy", "예의 바른": "polite", "친절한": "kind",
+            "무례한": "rude", "이기적인": "selfish", "거만한": "arrogant", "고집 센": "stubborn",
+            "민감한": "sensitive", "똑똑한": "smart", "영리한": "clever", "현명한": "wise",
+            "어리석은": "foolish", "온순한": "gentle", "배려심 있는": "considerate", "사려 깊은": "thoughtful",
+            "키가 큰": "tall", "키가 작은": "short", "귀여운": "cute", "예쁜": "pretty",
+            "아름다운": "beautiful", "잘생긴": "handsome", "못생긴": "ugly", "화창한": "sunny",
+            "흐린": "cloudy", "바람 부는": "windy", "미세먼지가 많은": "dusty", "안개 낀": "foggy",
+            "비 오는": "rainy", "눈 오는": "snowy", "추운": "cold", "더운": "hot",
+            "따뜻한": "warm", "시원한": "cool", "습한": "humid", "건조한": "dry",
+            "매운": "spicy", "달콤한": "sweet", "짠": "salty", "싱거운": "bland",
+            "기름진": "oily", "강한": "strong", "약한": "weak", "무거운": "heavy",
+            "가벼운": "light", "준비된": "ready", "높은": "high", "낮은": "low",
+            "두꺼운": "thick", "얇은": "thin", "비싼": "expensive", "싼": "cheap",
+            "먼": "far", "가까운": "near", "꽉 끼는": "tight", "맞는": "correct, right",
+            "틀린": "wrong", "새로운": "new", "낡은": "old", "부유한": "rich",
+            "가난한": "poor", "충분한": "enough", "곧은": "straight", "곱슬한": "curly",
+            "날카로운": "sharp", "신선한": "fresh", "썩은": "rotton", "위험한": "danger",
+            "안전한": "safe"
+        };
+
+        let currentIndex = 0;
+        let words = [];
+        let currentMode = '';
+
+        function showMainMenu() {
+            document.getElementById('main-menu').classList.remove('hidden');
+            document.getElementById('vocab-menu').classList.add('hidden');
+            document.getElementById('card-game').classList.add('hidden');
+            document.getElementById('quiz-game').classList.add('hidden');
+            document.getElementById('typing-game').classList.add('hidden');
+            document.getElementById('timer-section').classList.add('hidden');
+        }
+
+        function showVocabMenu() {
+            document.getElementById('main-menu').classList.add('hidden');
+            document.getElementById('vocab-menu').classList.remove('hidden');
+        }
+
+        function startGame(mode) {
+            currentMode = mode;
+            currentIndex = 0;
+            words = Object.entries(vocab);
+            
+            document.getElementById('vocab-menu').classList.add('hidden');
+            
+            if (mode === 'card-eng' || mode === 'card-kor') {
+                showCardGame();
+            } else if (mode === 'quiz-eng' || mode === 'quiz-kor') {
+                showQuizGame();
+            } else if (mode === 'typing') {
+                showTypingGame();
+            }
+        }
+
+        function showCardGame() {
+            const container = document.getElementById('card-game');
+            container.classList.remove('hidden');
+            
+            const [korean, english] = words[currentIndex];
+            const front = currentMode === 'card-eng' ? english : korean;
+            const back = currentMode === 'card-eng' ? korean : english;
+            
+            container.innerHTML = `
+                <button class="back-btn" onclick="backToVocabMenu()">← 돌아가기</button>
+                <h1>카드 학습 (${currentIndex + 1}/${words.length})</h1>
+                <div class="card-container">
+                    <div class="card" id="flip-card" onclick="flipCard()">
+                        <div class="card-inner">
+                            <div class="card-front">${front}</div>
+                            <div class="card-back">${back}</div>
+                        </div>
+                    </div>
+                    <div id="next-container"></div>
+                </div>
+            `;
+        }
+
+        function flipCard() {
+            const card = document.getElementById('flip-card');
+            card.classList.toggle('flipped');
+            
+            if (card.classList.contains('flipped')) {
+                document.getElementById('next-container').innerHTML = 
+                    '<button class="next-btn" onclick="nextCard()">다음</button>';
+            }
+        }
+
+        function nextCard() {
+            currentIndex++;
+            if (currentIndex >= words.length) {
+                alert('모든 단어를 학습했습니다!');
+                backToVocabMenu();
+            } else {
+                showCardGame();
+            }
+        }
+
+        function showQuizGame() {
+            const container = document.getElementById('quiz-game');
+            container.classList.remove('hidden');
+            
+            const [korean, english] = words[currentIndex];
+            const question = currentMode === 'quiz-eng' ? english : korean;
+            const correctAnswer = currentMode === 'quiz-eng' ? korean : english;
+            
+            const wrongAnswers = getRandomWrongAnswers(correctAnswer);
+            const allAnswers = [...wrongAnswers, correctAnswer].sort(() => Math.random() - 0.5);
+            
+            container.innerHTML = `
+                <button class="back-btn" onclick="backToVocabMenu()">← 돌아가기</button>
+                <h1>퀴즈 (${currentIndex + 1}/${words.length})</h1>
+                <div class="quiz-container">
+                    <div class="quiz-card">${question}</div>
+                    <div class="options">
+                        ${allAnswers.map(ans => 
+                            `<button class="option-btn" onclick="checkAnswer('${ans}', '${correctAnswer}')">${ans}</button>`
+                        ).join('')}
+                    </div>
+                    <div id="result-container"></div>
+                </div>
+            `;
+        }
+
+        function getRandomWrongAnswers(correctAnswer) {
+            const allAnswers = currentMode === 'quiz-eng' 
+                ? Object.keys(vocab)
+                : Object.values(vocab);
+            
+            const wrongAnswers = allAnswers.filter(ans => ans !== correctAnswer);
+            const shuffled = wrongAnswers.sort(() => Math.random() - 0.5);
+            return shuffled.slice(0, 3);
+        }
+
+        function checkAnswer(selected, correct) {
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                if (btn.textContent === correct) {
+                    btn.classList.add('correct');
+                } else if (btn.textContent === selected && selected !== correct) {
+                    btn.classList.add('wrong');
+                }
+            });
+            
+            const resultContainer = document.getElementById('result-container');
+            const isCorrect = selected === correct;
+            resultContainer.innerHTML = `
+                <div class="result-message ${isCorrect ? 'correct' : 'wrong'}">
+                    ${isCorrect ? '정답입니다!' : '오답입니다!'}
+                </div>
+                <button class="next-btn" onclick="nextQuiz()">다음</button>
+            `;
+        }
+
+        function nextQuiz() {
+            currentIndex++;
+            if (currentIndex >= words.length) {
+                alert('모든 퀴즈를 완료했습니다!');
+                backToVocabMenu();
+            } else {
+                showQuizGame();
+            }
+        }
+
+        function showTypingGame() {
+            const container = document.getElementById('typing-game');
+            container.classList.remove('hidden');
+            
+            container.innerHTML = `
+                <button class="back-btn" onclick="backToVocabMenu()">← 돌아가기</button>
+                <h1>타자 게임</h1>
+                <div class="game-canvas" id="game-canvas">
+                    <div class="game-hud">
+                        <div id="lives">❤️❤️❤️</div>
+                        <div id="score">Score: 0</div>
+                    </div>
+                    <div class="input-container">
+                        <input type="text" class="word-input" id="word-input" placeholder="뜻을 입력하세요">
+                    </div>
+                </div>
+            `;
+            
+            startTypingGame();
+        }
+
+        let gameWords = [];
+        let gameScore = 0;
+        let gameLives = 3;
+        let gameInterval;
+        let spawnInterval;
+
+        function startTypingGame() {
+            gameWords = [];
+            gameScore = 0;
+            gameLives = 3;
+            
+            const input = document.getElementById('word-input');
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    checkTypedWord(input.value.trim());
+                    input.value = '';
+                }
+            });
+            
+            spawnInterval = setInterval(spawnWord, 2000);
+            gameInterval = setInterval(updateGame, 50);
+        }
+
+        function spawnWord() {
+            if (gameLives <= 0) return;
+            
+            const isFast = Math.random() < 0.5;
+            const randomWord = words[Math.floor(Math.random() * words.length)];
+            const english = randomWord[1];
+            const korean = randomWord[0];
+            
+            const wordObj = {
+                displayText: english,
+                answerText: korean,
+                x: Math.random() * 500,
+                y: 0,
+                speed: isFast ? 3 : 1.5,
+                isFast: isFast,
+                element: null
+            };
+            
+            const canvas = document.getElementById('game-canvas');
+            const wordEl = document.createElement('div');
+            wordEl.className = 'falling-word';
+            wordEl.textContent = english;
+            wordEl.style.left = wordObj.x + 'px';
+            wordEl.style.top = wordObj.y + 'px';
+            wordEl.style.color = isFast ? '#888' : 'white';
+            
+            wordObj.element = wordEl;
+            canvas.appendChild(wordEl);
+            gameWords.push(wordObj);
+        }
+
+        function updateGame() {
+            if (gameLives <= 0) {
+                endGame();
+                return;
+            }
+            
+            gameWords.forEach((word, index) => {
+                word.y += word.speed;
+                word.element.style.top = word.y + 'px';
+                
+                if (word.y > 450) {
+                    word.element.remove();
+                    gameWords.splice(index, 1);
+                    gameLives--;
+                    gameScore -= 15;
+                    if (gameScore < 0) gameScore = 0;
+                    updateHUD();
+                }
+            });
+        }
+
+        function checkTypedWord(typed) {
+            const index = gameWords.findIndex(w => w.answerText.toLowerCase() === typed.toLowerCase());
+            
+            if (index !== -1) {
+                const word = gameWords[index];
+                gameScore += word.isFast ? 30 : 15;
+                word.element.remove();
+                gameWords.splice(index, 1);
+                updateHUD();
+            }
+        }
+
+        function updateHUD() {
+            document.getElementById('score').textContent = `Score: ${gameScore}`;
+            document.getElementById('lives').textContent = '❤️'.repeat(gameLives);
+        }
+
+        function endGame() {
+            clearInterval(gameInterval);
+            clearInterval(spawnInterval);
+            alert(`게임 종료! 최종 점수: ${gameScore}`);
+            backToVocabMenu();
+        }
+
+        function showTimer() {
+            document.getElementById('main-menu').classList.add('hidden');
+            const container = document.getElementById('timer-section');
+            container.classList.remove('hidden');
+            
+            container.innerHTML = `
+                <button class="back-btn" onclick="showMainMenu()">← 돌아가기</button>
+                <h1>공부 타이머</h1>
+                <div class="timer-container">
+                    <div class="timer-display" id="timer-display">00:00:00</div>
+                    <div class="timer-controls">
+                        <button class="timer-btn" onclick="startTimer()">시작</button>
+                        <button class="timer-btn" onclick="stopTimer()">중지</button>
+                        <button class="timer-btn" onclick="saveSheet()">CSV 파일 저장</button>
+                        <button class="timer-btn" onclick="clearRecords()">기록 초기화</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        let timerInterval;
+        let timerSeconds = 0;
+        let timerRunning = false;
+
+        function startTimer() {
+            if (!timerRunning) {
+                timerRunning = true;
+                timerInterval = setInterval(() => {
+                    timerSeconds++;
+                    updateTimerDisplay();
+                }, 1000);
+            }
+        }
+
+        function stopTimer() {
+            timerRunning = false;
+            clearInterval(timerInterval);
+        }
+
+        function updateTimerDisplay() {
+            const hours = Math.floor(timerSeconds / 3600);
+            const minutes = Math.floor((timerSeconds % 3600) / 60);
+            const seconds = timerSeconds % 60;
+            
+            const display = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            document.getElementById('timer-display').textContent = display;
+        }
+
+        function saveSheet() {
+            const hours = Math.floor(timerSeconds / 3600);
+            const minutes = Math.floor((timerSeconds % 3600) / 60);
+            const seconds = timerSeconds % 60;
+            
+            const now = new Date();
+            const dateStr = now.toLocaleString('ko-KR');
+            
+            // 기존 기록 불러오기
+            let records = JSON.parse(localStorage.getItem('studyRecords') || '[]');
+            
+            // 새 기록 추가
+            const newRecord = {
+                날짜: dateStr,
+                공부시간: `${hours}시간 ${minutes}분 ${seconds}초`,
+                총초: timerSeconds
+            };
+            records.push(newRecord);
+            
+            // localStorage에 저장
+            localStorage.setItem('studyRecords', JSON.stringify(records));
+            
+            // CSV 형식으로 변환
+            let csvContent = '날짜,공부시간,총초\n';
+            records.forEach(record => {
+                csvContent += `${record.날짜},${record.공부시간},${record.총초}\n`;
+            });
+            
+            // CSV 파일 다운로드
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '공부시간.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert(`공부 시간이 CSV 파일로 저장되었습니다!\n(브라우저 다운로드 폴더에 저장됩니다)\n\n파일명: 공부시간.csv\n원하는 경로: C:\\bjj\\공부시간.csv\n\n현재까지 총 ${records.length}개의 기록이 누적되었습니다.`);
+            
+            // 타이머 초기화
+            timerSeconds = 0;
+            updateTimerDisplay();
+        }
+
+        function clearRecords() {
+            if (confirm('정말로 모든 공부 기록을 삭제하시겠습니까?')) {
+                localStorage.removeItem('studyRecords');
+                alert('모든 기록이 초기화되었습니다.');
+            }
+        }
+
+        function backToVocabMenu() {
+            if (gameInterval) clearInterval(gameInterval);
+            if (spawnInterval) clearInterval(spawnInterval);
+            
+            document.getElementById('card-game').classList.add('hidden');
+            document.getElementById('quiz-game').classList.add('hidden');
+            document.getElementById('typing-game').classList.add('hidden');
+            document.getElementById('vocab-menu').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
