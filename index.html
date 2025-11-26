@@ -1,0 +1,168 @@
+  <!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 영어 단어 학습 앱 | 배재준</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@300;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS 변수 설정 */
+        :root {
+            --primary-color: #4CAF50; /* 그린 */
+            --secondary-color: #2196F3; /* 블루 */
+            --accent-color: #FF9800; /* 오렌지 */
+            --bg-light: #f4f7f6;
+            --bg-dark: #333333;
+            --text-color: #333333;
+            --card-bg: #ffffff;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 기본 스타일 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', 'Jua', sans-serif;
+            background: linear-gradient(135deg, var(--bg-light) 0%, #c8e6c9 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: var(--text-color);
+        }
+
+        .container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            max-width: 900px;
+            width: 100%;
+            min-height: 500px;
+            border: 1px solid #e0e0e0;
+            margin-top: 20px;
+        }
+
+        /* 헤더/제목 스타일 */
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 2.8em;
+            font-family: 'Jua', sans-serif;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .creator-info {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #666;
+            font-weight: 300;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 15px;
+        }
+
+        /* 기능 버튼 메뉴 스타일 */
+        .menu {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .menu-button {
+            text-decoration: none;
+            background: var(--secondary-color);
+            color: white;
+            padding: 20px 35px;
+            border-radius: 15px;
+            font-size: 1.4em;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+            transition: all 0.3s ease;
+            text-align: center;
+            min-width: 200px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .menu-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(33, 150, 243, 0.6);
+            background: #1976D2; /* 더 진한 블루 */
+        }
+        
+        .timer-button {
+            background: var(--accent-color);
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
+        }
+        
+        .timer-button:hover {
+             box-shadow: 0 8px 20px rgba(255, 152, 0, 0.6);
+             background: #FB8C00; /* 더 진한 오렌지 */
+        }
+
+        /* 바이브코딩 작성 소감 섹션 */
+        .vibecoding-review {
+            background: #f0f0f0;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .vibecoding-review h2 {
+            color: var(--primary-color);
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            border-bottom: 2px dashed var(--primary-color);
+            padding-bottom: 10px;
+        }
+
+        .vibecoding-review p {
+            line-height: 1.8;
+            color: var(--text-color);
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>📚 영어 단어 학습 통합 앱</h1>
+        
+        <div class="creator-info">
+            제작: **부산기계공업고등학교 배재준**
+        </div>
+
+        <div class="menu">
+            <a href="https://amond0101.github.io/word/01/index.html" class="menu-button">
+                📝 단어 연습 시작
+            </a>
+            
+            <a href="https://script.google.com/macros/s/AKfycby-QFFTiuCZC-cWPswxXT2dlyuxzeuw7VSyx0-jmuIKERvoP2mTV6p_NKpIZAa9PK2g/exec" class="menu-button timer-button">
+                ⏰ 공부 타이머 기록
+            </a>
+        </div>
+
+        <div class="vibecoding-review">
+            <h2>바이브코딩 작성 소감 ✨</h2>
+            <p>
+                웹 개발에 대한 기본적인 이해와 흥미를 높일 수 있는 좋은 기회였습니다. 
+                특히, CSS를 활용하여 UI 디자인을 직접 구현해보면서 **사용자 경험**과 **시각적인 요소**의 중요성을 깨달았습니다. 
+                단어 암기 프로그램의 기능을 구현하는 과정에서 JavaScript를 심도 있게 학습할 수 있었고, 
+                작업한 결과물이 실제로 작동하는 것을 보며 큰 보람을 느꼈습니다. 
+                앞으로도 끊임없이 학습하고 성장하는 개발자가 되겠습니다.
+            </p>
+        </div>
+        
+    </div>
+
+</body>
+</html>
